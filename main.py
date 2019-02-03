@@ -14,7 +14,41 @@ class KBTest(unittest.TestCase):
         for item in data:
             if isinstance(item, Fact) or isinstance(item, Rule):
                 self.KB.kb_assert(item)
-        
+
+    def test1a(self):
+        # Did the student code contain syntax errors, AttributeError, etc.
+        ask1 = read.parse_input("fact: (parentof ada ?X)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        self.assertEqual(str(answer[0]), "?X : bing")
+        self.assertEqual(len(answer), 1)
+
+    def test1b(self):
+        # Did the student code contain syntax errors, AttributeError, etc.
+        ask1 = read.parse_input("fact: (parentof ada bing)")
+        print(' Asking if', ask1)
+        answer = self.KB.kb_ask(ask1)
+        print(answer)
+        self.assertEqual(answer.list_of_bindings[0][0].bindings, [])
+
+    def test1c(self):
+        # Did the student code contain syntax errors, AttributeError, etc.
+        r1 = read.parse_input("fact: (parentof ada bing)")
+        print(' Retracting', r1)
+        self.KB.kb_retract(r1)
+        answer = self.KB.kb_ask(r1)  # cannot retract because this is supported by (motherof ada bing)
+        self.assertFalse(answer.list_of_bindings[0][0].bindings, [])
+
+    def test1d(self):
+        # Did the student code contain syntax errors, AttributeError, etc.
+        r1 = read.parse_input("fact: (motherof ada bing)")
+        print(' Retracting', r1)
+        self.KB.kb_retract(r1)
+
+        ask1 = read.parse_input("fact: (parentof ada bing)")
+        answer = self.KB.kb_ask(ask1)
+        self.assertFalse(answer)
+
     def test1(self):
         # Did the student code contain syntax errors, AttributeError, etc.
         ask1 = read.parse_input("fact: (motherof ada ?X)")
